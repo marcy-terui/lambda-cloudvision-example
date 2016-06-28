@@ -11,9 +11,14 @@ GOOGLE_CLOUD_VISION_API_URL = 'https://vision.googleapis.com/v1/images:annotate?
 
 def lambda_handler(event, context):
     image_content = base64.b64encode(requests.get(event['url']).content)
+    # cloudvision(image_content).get('responses')
+    result = ''
     for res in cloudvision(image_content).get('responses'):
         for txt in res.get('textAnnotations'):
-            print(txt['description'])
+            if txt['boundingPoly']['vertices'][0]['x'] > 400:
+                result += ' {}'.format(txt['description'])
+                print(txt['description'])
+    print(result)
 
 
 def cloudvision(image_content):
